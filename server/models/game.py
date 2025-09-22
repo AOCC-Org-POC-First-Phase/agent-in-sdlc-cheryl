@@ -1,3 +1,8 @@
+"""
+Game model for the Tailspin Toys Crowd Funding platform.
+This module defines the Game entity with relationships to Publisher and Category,
+including validation and data conversion methods.
+"""
 from . import db
 from .base import BaseModel
 from sqlalchemy.orm import validates, relationship
@@ -20,18 +25,56 @@ class Game(BaseModel):
     
     @validates('title')
     def validate_name(self, key, name):
+        """
+        Validates the game title field.
+        
+        Args:
+            key (str): The field name being validated
+            name (str): The title value to validate
+            
+        Returns:
+            str: The validated title
+            
+        Raises:
+            ValueError: If title is invalid
+        """
         return self.validate_string_length('Game title', name, min_length=2)
     
     @validates('description')
     def validate_description(self, key, description):
+        """
+        Validates the game description field.
+        
+        Args:
+            key (str): The field name being validated
+            description (str or None): The description value to validate
+            
+        Returns:
+            str or None: The validated description
+            
+        Raises:
+            ValueError: If description is invalid
+        """
         if description is not None:
             return self.validate_string_length('Description', description, min_length=10, allow_none=True)
         return description
     
     def __repr__(self):
+        """
+        Returns a string representation of the Game object.
+        
+        Returns:
+            str: A formatted string showing the game title and ID
+        """
         return f'<Game {self.title}, ID: {self.id}>'
 
     def to_dict(self):
+        """
+        Converts the Game object to a dictionary representation.
+        
+        Returns:
+            dict: A dictionary containing game data with nested publisher and category objects
+        """
         return {
             'id': self.id,
             'title': self.title,
